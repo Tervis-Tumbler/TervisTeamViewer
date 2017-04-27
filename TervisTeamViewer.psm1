@@ -21,12 +21,18 @@
     #Invoke-WebRequest -Uri ($TeamViewerApiRootUrl + $TeamViewerApiResourcePath) -Method $HTTPMethod -Headers $Headers
 }
 
-function New-TervisTeamviewerUserAccessToken {
+function New-TervisTeamViewerUserAccessToken {
     $ClientId = (Get-PasswordstateCredential -PasswordID 4127 -AsPlainText).UserName
     $ClientSecret = (Get-PasswordstateCredential -PasswordID 4127 -AsPlainText).Password
     $AuthorizationCode = Get-TeamViewerApiAuthorizationCode -ClientId $ClientId
-    $TeamviewerApiAccessToken = Get-TeamViewerApiAccessToken -AuthorizationCode $AuthorizationCode
-    $TeamviewerApiAccessToken
+    $TeamViewerApiAccessToken = Get-TeamViewerUserAccessToken -AuthorizationCode $AuthorizationCode -ClientId $ClientId -ClientSecret $ClientSecret
+    $TeamViewerApiAccessToken | Export-TeamViewerUserAccessTokenToFile
+}
+
+function Update-TervisTeamViewerUserAccessTokenFile {
+    $ClientId = (Get-PasswordstateCredential -PasswordID 4127 -AsPlainText).UserName
+    $ClientSecret = (Get-PasswordstateCredential -PasswordID 4127 -AsPlainText).Password
+    Update-TeamViewerUserAccessTokenFile -ClientId $ClientId -ClientSecret $ClientSecret
 }
 
 function Invoke-TervisTeamViewerPingApi {
