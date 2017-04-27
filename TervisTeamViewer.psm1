@@ -1,14 +1,20 @@
-﻿function Invoke-TeamViewerApiFunction {
-    param (
-        $ApiResource,
+﻿#requires -module TeamViewerPowerShell
+
+function Invoke-TeamViewerApiFunction {
+    param (        
         $HTTPMethod,
+        $ApiResource,
+        $ApiId,
         [hashtable]$AdditionalHeaders,
         [hashtable]$ApiRequest
     )
     $UserAccessToken = Import-TeamViewerUserAccessTokenFromFile
     $ApiRootUrl = "https://webapi.teamviewer.com/api/v1/"
     $ApiUriString = $ApiRootUrl + $ApiResource
-    $Headers = @{"Authorization" = "$($UserAccessToken.TokenType) $($UserAccessToken.UserAccessToken)"}
+    if ($ApiId) {
+        $ApiUriString = $ApiUriString + "/" + $ApiId
+    }
+    $Headers = @{Authorization = "$($UserAccessToken.TokenType) $($UserAccessToken.UserAccessToken)"}
     if ($AdditionalHeaders) {
         $Headers = $Headers + $AdditionalHeaders
     }
