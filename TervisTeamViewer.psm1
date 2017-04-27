@@ -2,23 +2,18 @@
     param (
         $ApiResource,
         $HTTPMethod,
-        $AdditionalHeaders,
+        [hashtable]$AdditionalHeaders,
         [hashtable]$ApiRequest
     )
-    $TeamViewerPasswordStateEntry = Get-PasswordstateEntryDetails -PasswordID 4125
-    $ApiToken = $TeamViewerPasswordStateEntry.Password
-    $ApiRootUrl = $TeamViewerPasswordStateEntry.Url
-    $ApiVersion = "v1"
-    $ApiUriString = $ApiRootUrl + $ApiVersion + "/" + $ApiResource
-    $BasicHeaders = @{"Authorization" = "Bearer $TeamViewerApiToken"}
+    $UserAccessToken = Import-TeamViewerUserAccessTokenFromFile
+    $ApiRootUrl = "https://webapi.teamviewer.com/api/v1/"
+    $ApiUriString = $ApiRootUrl + $ApiResource
+    $Headers = @{"Authorization" = "$($UserAccessToken.TokenType) $($UserAccessToken.UserAccessToken)"}
     if ($AdditionalHeaders) {
-        $Headers = $BasicHeaders + $AdditionalHeaders
-    } else {
-        $Headers = $BasicHeaders
+        $Headers = $Headers + $AdditionalHeaders
     }
     $ApiRequestBody = $ApiRequest | ConvertTo-Json
     Invoke-RestMethod -Method $HTTPMethod -Uri $ApiUriString -Headers $Headers -Body $ApiRequestBody -ContentType application/json
-    #Invoke-WebRequest -Uri ($TeamViewerApiRootUrl + $TeamViewerApiResourcePath) -Method $HTTPMethod -Headers $Headers
 }
 
 function New-TervisTeamViewerUserAccessToken {
