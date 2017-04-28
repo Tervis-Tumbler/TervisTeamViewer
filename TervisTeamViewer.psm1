@@ -5,6 +5,7 @@ function Invoke-TeamViewerApiFunction {
         $HTTPMethod,
         $ApiResource,
         $ApiId,
+        $ApiVerb,
         [hashtable]$AdditionalHeaders,
         [hashtable]$ApiRequest
     )
@@ -13,6 +14,9 @@ function Invoke-TeamViewerApiFunction {
     $ApiUriString = $ApiRootUrl + $ApiResource
     if ($ApiId) {
         $ApiUriString = $ApiUriString + "/" + $ApiId
+        if ($ApiVerb) {
+            $ApiUriString = $ApiUriString + "/" + $ApiVerb
+        }            
     }
     $Headers = @{Authorization = "$($UserAccessToken.TokenType) $($UserAccessToken.UserAccessToken)"}
     if ($AdditionalHeaders) {
