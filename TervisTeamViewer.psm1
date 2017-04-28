@@ -80,6 +80,30 @@ function New-TervisTeamViewerUser {
     }        
 }
 
+function Get-TervisTeamViewerGroups {
+    param (
+        $GroupId
+    )
+    $RequestArgs = @{
+        HTTPMethod = "Get"
+        ApiResource = "groups"
+        ApiId = $GroupId
+    }
+    (Invoke-TeamViewerApiFunction @RequestArgs).groups
+}
+
+function Get-TervisTeamViewerGroupId {
+    param (
+        [Parameter(Mandatory,ValueFromPipelineByPropertyName)]$Name
+    )
+    begin {
+        $Groups = Get-TervisTeamViewerGroups
+    }
+    process {
+        $Groups | where name -Match $Name
+    }    
+}
+
 function Get-TervisTeamViewerDevices {
     param (
         $DeviceId
