@@ -93,7 +93,12 @@ function Get-TervisTeamViewerGroups {
         ApiResource = "groups"
         ApiId = $GroupId
     }
-    (Invoke-TeamViewerApiFunction @RequestArgs).groups
+    $Return = Invoke-TeamViewerApiFunction @RequestArgs
+    if ($GroupId) {
+        $Return
+    } else {
+        $Return.Groups
+    }
 }
 
 function Get-TervisTeamViewerGroupId {
