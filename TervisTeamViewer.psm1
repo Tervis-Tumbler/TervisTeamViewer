@@ -149,8 +149,8 @@ function Set-TervisTeamViewerDeviceProperties {
         $Alias,
         $Description,
         $Password,
-        [ValidateSet("PolicyId")]$PolicyId,
-        [ValidateSet("GroupId")]$GroupId
+        [Parameter(ParameterSetName="PolicyId")]$PolicyId,
+        [Parameter(ParameterSetName="GroupId")]$GroupId
     )
     $RequestArgs = @{
         HTTPMethod = "Put"
