@@ -1,4 +1,4 @@
-﻿#requires -module TeamViewerPowerShell
+﻿#requires -module TeamViewerPowerShell,WebServicesPowerShellProxyBuilder
 
 function Invoke-TeamViewerApiFunction {
     param (        
@@ -6,6 +6,7 @@ function Invoke-TeamViewerApiFunction {
         $ApiResource,
         $ApiId,
         $ApiVerb,
+        $ApiUriParameters,
         [hashtable]$AdditionalHeaders,
         [hashtable]$ApiRequest
     )
@@ -17,6 +18,9 @@ function Invoke-TeamViewerApiFunction {
         if ($ApiVerb) {
             $ApiUriString = $ApiUriString + "/" + $ApiVerb
         }            
+    }
+    if ($ApiUriParameters) {
+        $ApiUriString = $ApiUriString + "?$(ConvertTo-URLEncodedQueryStringParameterString -PipelineInput $ApiUriParameters)"
     }
     $Headers = @{Authorization = "$($UserAccessToken.TokenType) $($UserAccessToken.UserAccessToken)"}
     if ($AdditionalHeaders) {
