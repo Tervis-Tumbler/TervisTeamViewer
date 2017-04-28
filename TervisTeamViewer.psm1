@@ -80,4 +80,72 @@ function New-TervisTeamViewerUser {
     }        
 }
 
-function Update-TervisTeamViewerUser {}
+function Get-TervisTeamViewerDevices {
+    param (
+        $DeviceId
+    )
+    $RequestArgs = @{
+        HTTPMethod = "Get"
+        ApiResource = "devices"
+        ApiId = $DeviceId
+    }
+    (Invoke-TeamViewerApiFunction @RequestArgs).devices
+}
+
+function Set-TervisTeamViewerDeviceProperties {
+    param (
+        [Parameter(Mandatory)]$DeviceId,
+        $Alias,
+        $Description,
+        $Password,
+        [ValidateSet("PolicyId")]$PolicyId,
+        [ValidateSet("GroupId")]$GroupId
+    )
+    $RequestArgs = @{
+        HTTPMethod = "Put"
+        ApiResource = "devices"
+        ApiId = $DeviceId
+        ApiRequest = @{
+            alias = $Alias
+            description = $Description
+            password = $Password
+            policy_id = $PolicyId
+            groupid = $GroupId
+        }
+    }
+    Invoke-TeamViewerApiFunction @RequestArgs
+}
+
+function New-TervisTeamViewerDevice {
+    param (
+        [Parameter(Mandatory)]$RemoteControlId,
+        [Parameter(Mandatory)]$GroupId,
+        $Alias,        
+        $Description,
+        $Password
+    )
+    $RequestArgs = @{
+        HTTPMethod = "Post"
+        ApiResource = "devices"
+        ApiRequest = @{
+            remotecontrol_id = $RemoteControlId
+            groupid = $GroupId
+            alias = $Alias
+            description = $Description
+            password = $Password
+        }
+    }
+    Invoke-TeamViewerApiFunction @RequestArgs
+}
+
+function Remove-TervisTeamViewerDevice {
+    param (
+        [Parameter(Mandatory)]$DeviceId
+    )
+    $RequestArgs = @{
+        HTTPMethod = "Delete"
+        ApiResource = "devices"
+        ApiId = $DeviceId
+    }
+    Invoke-TeamViewerApiFunction @RequestArgs
+}
