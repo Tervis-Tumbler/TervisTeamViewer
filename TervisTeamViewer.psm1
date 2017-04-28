@@ -103,14 +103,29 @@ function Get-TervisTeamViewerGroups {
 
 function Get-TervisTeamViewerGroupId {
     param (
-        [Parameter(Mandatory,ValueFromPipelineByPropertyName)]$Name
+        [Parameter(ValueFromPipelineByPropertyName)]$Name,
+        [Parameter(ValueFromPipelineByPropertyName)]
+        [ValidateSet("True","False")]$Shared
     )
-    begin {
-        $Groups = Get-TervisTeamViewerGroups
-    }
     process {
-        $Groups | where name -Match $Name
-    }    
+        if (-not ($Name -or $Shared)) {
+            throw "Either Name or Shared parameter required."
+        }
+        $ApiUriParameters = @{}
+        if ($Name) {
+            $ApiUriParameters = $ApiUriParameters + @{name = $Name}
+        }
+        if ($Shared -ne $null) {
+            $ApiUriParameters = $ApiUriParameters + @{shared = $Shared}
+        }
+        $RequestArgs = @{
+            HTTPMethod = "Get"
+            ApiResource = "groups"
+            ApiId = $GroupId
+            ApiUriParameters = $ApiUriParameters
+        }
+        (Invoke-TeamViewerApiFunction @RequestArgs).groups
+    }
 }
 
 function Get-TervisTeamViewerDevices {
