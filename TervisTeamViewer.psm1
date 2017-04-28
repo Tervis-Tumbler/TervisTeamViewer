@@ -132,6 +132,22 @@ function Get-TervisTeamViewerGroupId {
     }
 }
 
+function New-TervisTeamViewerGroup {
+    param (
+        [Parameter(Mandatory)]$Name,
+        $PolicyId
+    )
+    $RequestArgs = @{
+        HTTPMethod = "Post"
+        ApiResource = "groups"
+        ApiRequest = @{
+            name = $Name
+            policy_id = $PolicyId
+        }
+    }
+    Invoke-TeamViewerApiFunction @RequestArgs
+}
+
 function Get-TervisTeamViewerDevices {
     param (
         $DeviceId
