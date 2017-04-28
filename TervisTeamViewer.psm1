@@ -120,6 +120,24 @@ function Get-TervisTeamViewerDevices {
     (Invoke-TeamViewerApiFunction @RequestArgs).devices
 }
 
+function Get-TervisTeamViewerDeviceId {
+    param (
+        [Parameter(ParameterSetName="Alias")]$Alias,
+        [Parameter(ParameterSetName="TeamViewerId")][int]$TeamViewerId
+    )
+    $RequestArgs = @{
+        HTTPMethod = "Get"
+        ApiResource = "devices"
+        ApiId = $DeviceId
+    }
+    $Return = (Invoke-TeamViewerApiFunction @RequestArgs).devices
+    if ($Alias) {
+        $Return | where alias -Match $Alias
+    } elseif ($TeamViewerId) {
+        $Return | where remotecontrol_id -Match $TeamViewerId
+    }
+}
+
 function Set-TervisTeamViewerDeviceProperties {
     param (
         [Parameter(Mandatory)]$DeviceId,
