@@ -31,16 +31,18 @@ function Invoke-TeamViewerApiFunction {
 }
 
 function New-TervisTeamViewerUserAccessToken {
-    $ClientId = (Get-PasswordstateCredential -PasswordID 4127 -AsPlainText).UserName
-    $ClientSecret = (Get-PasswordstateCredential -PasswordID 4127 -AsPlainText).Password
+    $Password = Get-PasswordstatePassword -ID 4127
+    $ClientId = $Password.UserName
+    $ClientSecret = $Password.Password
     $AuthorizationCode = Get-TeamViewerApiAuthorizationCode -ClientId $ClientId
     $TeamViewerApiAccessToken = Get-TeamViewerUserAccessToken -AuthorizationCode $AuthorizationCode -ClientId $ClientId -ClientSecret $ClientSecret
     $TeamViewerApiAccessToken | Export-TeamViewerUserAccessTokenToFile
 }
 
 function Update-TervisTeamViewerUserAccessTokenFile {
-    $ClientId = (Get-PasswordstateCredential -PasswordID 4127 -AsPlainText).UserName
-    $ClientSecret = (Get-PasswordstateCredential -PasswordID 4127 -AsPlainText).Password
+    $Password = Get-PasswordstatePassword -ID 4127
+    $ClientId = $Password.UserName
+    $ClientSecret = $Password.Password
     Update-TeamViewerUserAccessTokenFile -ClientId $ClientId -ClientSecret $ClientSecret
 }
 
@@ -80,7 +82,7 @@ function New-TervisTeamViewerUser {
         $ADUser = Get-ADUser -Identity $SamAccountName -Properties EmailAddress
         $ApiRequest = @{
             email = $ADUser.EmailAddress
-            password = (Get-PasswordstateCredential -PasswordID 4126 -AsPlainText).Password
+            password = (Get-PasswordstatePassword -ID 4126).Password
             name = $ADUser.Name
             language = "en"
         }
